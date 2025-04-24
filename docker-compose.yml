@@ -1,0 +1,18 @@
+services:
+  frontend:
+    build: ./
+    container_name: frontend
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+    networks:
+      - default
+  db:
+    image: mongo
+    container_name: db
+    ports: 
+      - "27017:27017"
+    networks:
+      - default
+
