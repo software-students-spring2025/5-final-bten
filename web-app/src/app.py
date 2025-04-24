@@ -1,12 +1,16 @@
 from flask import Flask, jsonify, request, render_template
 import requests
 import os
+from pymongo import MongoClient
 from dotenv import load_dotenv
+from bson import ObjectId
 
 
 def create_app():
     app = Flask(__name__)
     load_dotenv()
+    client = MongoClient(('mongodb://localhost:27017'))
+    db = client['recipes']
 
     """
     openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -25,9 +29,11 @@ def create_app():
     def predict():
         data = request.get_json()
         ingredient = data.get("ingredients")
-        # call chatgpt here
+        # call chatgpt api here
         recipe = {"recipe" : "recipe"}
-        return jsonify(recipe)
+        result = db.recipes.insert_one(recipe)
+        recipe['_id'] = str(result.inserted_id)
+        return jsonify(recipe)   
         
     
     return app

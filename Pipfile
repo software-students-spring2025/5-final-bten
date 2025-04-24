@@ -9,6 +9,8 @@ pytest = "*"
 flask = "*"
 requests = "*"
 pytest-flask = "*"
+pymongo = "*"
+jsonify = "*"
 
 [dev-packages]
 
