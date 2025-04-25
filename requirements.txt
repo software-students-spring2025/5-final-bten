@@ -22,6 +22,6 @@ jsonify==0.5
 pymongo==4.12.0
 python-dateutil==2.9.0.post0
 llama-index-llms-openai==0.3.38
+llama-index==0.12.33
 requests==2.32.3
 six==1.17.0
-
