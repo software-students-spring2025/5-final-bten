@@ -144,7 +144,7 @@ with redirect_stdout(stdout_capture_buffer):
         agent_response = agent.chat(agent_query)
 
     except Exception as e:
-        print(f"\n Error during agent execution")
+        print("\n Error during agent execution")
         print(f"The error is : {e}")
         agent_response = "Agent execution failed see cap. logs."
 
