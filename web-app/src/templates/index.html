@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-stone-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-2xl">
+        <!-- Form Section -->
+        <div class="bg-white rounded-lg p-8 custom-shadow mb-8">
+            <h1 class="text-3xl font-semibold text-stone-800 mb-6 text-center">Personal Recipe Generator</h1>
+            <form id="recipeForm" class="space-y-6">
+                <div>
+                    <label for="ingredients" class="block text-sm font-medium text-stone-700 mb-2">
+                        What ingredients do you have?
+                    </label>
+                    <textarea
+                        id="ingredients"
+                        name="ingredients"
+                        rows="4"
+                        class="w-full px-4 py-2 border border-stone-300 rounded-md focus:ring-2 focus:ring-stone-500 focus:border-stone-500 resize-none"
+                        placeholder="Enter your ingredients (one per line)"
+                    ></textarea>
+                </div>
+
+                <div>
+                    <label for="goals" class="block text-sm font-medium text-stone-700 mb-2">
+                        What are your health goals?
+                    </label>
+                    <textarea
+                        id="goals"
+                        name="goals"
+                        rows="3"
+                        class="w-full px-4 py-2 border border-stone-300 rounded-md focus:ring-2 focus:ring-stone-500 focus:border-stone-500 resize-none"
+                        placeholder="Enter your health goals (e.g., weight loss, muscle gain, high protein, etc.)"
+                    ></textarea>
+                </div>
+
+                <div>
+                    <label for="additional_notes" class="block text-sm font-medium text-stone-700 mb-2">
+                        Additional Notes or Preferences
+                    </label>
+                    <textarea
+                        id="additional_notes"
+                        name="additional_notes"
+                        rows="2"
+                        class="w-full px-4 py-2 border border-stone-300 rounded-md focus:ring-2 focus:ring-stone-500 focus:border-stone-500 resize-none"
+                        placeholder="Any dietary restrictions or preferences?"
+                    ></textarea>
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-stone-700 text-white py-3 px-6 rounded-md hover:bg-stone-800 transition duration-200 font-medium"
+                >
+                    Generate Recipe
+                </button>
+            </form>
+        </div>
+
+        <!-- Recipe History Section -->
+        <div id="recipeHistory" class="bg-white rounded-lg p-8 custom-shadow">
+            <h2 class="text-2xl font-semibold text-stone-800 mb-4">Generated Recipes</h2>
+            <div id="recipeHistoryContent" class="space-y-4">
+                <!-- Recipe history will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store recipes in memory for this session
+        let recipeHistory = [];
+
+        function displayRecipe(recipe, container) {
+            const recipeHtml = `
+                <div class="border-b border-stone-200 pb-4 mb-4">
+                    <h3 class="text-xl font-medium text-stone-800 mb-2">${recipe.title || 'Custom Recipe'}</h3>
+                    <div class="text-stone-600 mb-2">
+                        <p><strong>Ingredients:</strong> ${recipe.ingredients || 'Not specified'}</p>
+                        <p><strong>Health Goals:</strong> ${recipe.goals || 'Not specified'}</p>
+                    </div>
+                    <div class="text-stone-700 whitespace-pre-line">
+                        ${recipe.recipe || 'Recipe details not available'}
+                    </div>
+                </div>
+            `;
+            container.innerHTML = recipeHtml + container.innerHTML;
+        }
+
+        document.getElementById('recipeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const ingredients = document.getElementById('ingredients').value;
+            const goals = document.getElementById('goals').value;
+            const additionalNotes = document.getElementById('additional_notes').value;
+
+            const data = {
+                ingredients: ingredients,
+                goals: goals,
+                additionalNotes: additionalNotes
+            };
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                // Create recipe object
+                const recipe = {
+                    title: `Recipe for ${ingredients.split('\n')[0]}...`,
+                    ingredients: ingredients,
+                    goals: goals,
+                    recipe: result.recipe,
+                    timestamp: new Date().toLocaleString()
+                };
+
+                // Add to history
+                recipeHistory.unshift(recipe);
+
+                // Update history
+                const historyContent = document.getElementById('recipeHistoryContent');
+                displayRecipe(recipe, historyContent);
+
+                // Clear form
+                e.target.reset();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to generate recipe. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html> 
