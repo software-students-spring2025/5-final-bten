@@ -6,13 +6,18 @@ from dotenv import load_dotenv
 from bson import ObjectId
 
 
+from mlclient import get_recipe_reccomendation
+
+apiKey = str(input("Please copy in OpenAI API Key: "))
+os.environ["OPENAI_API_KEY"] = apiKey
+
 def create_app():
     app = Flask(__name__)
     load_dotenv()
 
     MONGO_URI = os.getenv("MONGO_URI")
     client = MongoClient(MONGO_URI)
-    
+
     db = client['recipes']
 
     @app.route("/")
@@ -23,14 +28,20 @@ def create_app():
     @app.route("/predict", methods=["POST"])
     def predict():
         data = request.get_json()
-        ingredient = data.get("ingredients")
+        user_input = data.get("ingredients","")
         # call chatgpt api here
-        recipe = {"recipe" : "recipe"}
+        if not user_input:
+            return jsonify({"error": "no ingredients"})
+
+        recipe = get_recipe_reccomendation(user_input)
+
         result = db.recipes.insert_one(recipe)
         recipe['_id'] = str(result.inserted_id)
-        return jsonify(recipe)   
-        
-    
+        return jsonify(recipe)
+
+    # exception handling?
+
+
     return app
 
 
