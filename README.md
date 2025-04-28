@@ -1,6 +1,6 @@
 ![Web App CI](https://github.com/software-students-spring2025/5-final-bten/actions/workflows/web-app.yml/badge.svg?branch=)
 
-![Web App Image](https://hub.docker.com/repository/docker/nikitabhaskar/5-final-bten/tags/0.1.0/sha256-5627338269fd0b3aa2a296b68eb2a8a9f3c9c265dddacb3c12a980c8c6604ec9)
+[Web App Image](https://hub.docker.com/repository/docker/nikitabhaskar/5-final-bten/tags/0.1.0/sha256-5627338269fd0b3aa2a296b68eb2a8a9f3c9c265dddacb3c12a980c8c6604ec9)
 
 # Team Members:
 
