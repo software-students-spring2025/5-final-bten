@@ -13,7 +13,8 @@
 </head>
 <body class="bg-stone-50 min-h-screen">
     <div class="container mx-auto px-4 py-8 max-w-2xl">
-        <div class="bg-white rounded-lg p-8 custom-shadow">
+        <!-- Form Section -->
+        <div class="bg-white rounded-lg p-8 custom-shadow mb-8">
             <h1 class="text-3xl font-semibold text-stone-800 mb-6 text-center">Personal Recipe Generator</h1>
             <form id="recipeForm" class="space-y-6">
                 <div>
@@ -63,9 +64,36 @@
                 </button>
             </form>
         </div>
+
+        <!-- Recipe History Section -->
+        <div id="recipeHistory" class="bg-white rounded-lg p-8 custom-shadow">
+            <h2 class="text-2xl font-semibold text-stone-800 mb-4">Generated Recipes</h2>
+            <div id="recipeHistoryContent" class="space-y-4">
+                <!-- Recipe history will be inserted here -->
+            </div>
+        </div>
     </div>
 
     <script>
+        // Store recipes in memory for this session
+        let recipeHistory = [];
+
+        function displayRecipe(recipe, container) {
+            const recipeHtml = `
+                <div class="border-b border-stone-200 pb-4 mb-4">
+                    <h3 class="text-xl font-medium text-stone-800 mb-2">${recipe.title || 'Custom Recipe'}</h3>
+                    <div class="text-stone-600 mb-2">
+                        <p><strong>Ingredients:</strong> ${recipe.ingredients || 'Not specified'}</p>
+                        <p><strong>Health Goals:</strong> ${recipe.goals || 'Not specified'}</p>
+                    </div>
+                    <div class="text-stone-700 whitespace-pre-line">
+                        ${recipe.recipe || 'Recipe details not available'}
+                    </div>
+                </div>
+            `;
+            container.innerHTML = recipeHtml + container.innerHTML;
+        }
+
         document.getElementById('recipeForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -89,9 +117,28 @@
                 });
                 
                 const result = await response.json();
-                console.log(result);
+                
+                // Create recipe object
+                const recipe = {
+                    title: `Recipe for ${ingredients.split('\n')[0]}...`,
+                    ingredients: ingredients,
+                    goals: goals,
+                    recipe: result.recipe,
+                    timestamp: new Date().toLocaleString()
+                };
+
+                // Add to history
+                recipeHistory.unshift(recipe);
+
+                // Update history
+                const historyContent = document.getElementById('recipeHistoryContent');
+                displayRecipe(recipe, historyContent);
+
+                // Clear form
+                e.target.reset();
             } catch (error) {
                 console.error('Error:', error);
+                alert('Failed to generate recipe. Please try again.');
             }
         });
     </script>

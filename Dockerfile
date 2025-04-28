@@ -5,10 +5,10 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip3 install -r requirements.txt
 
-ADD . .
+COPY web-app/ .
 
-EXPOSE 5000
+EXPOSE 3000
 
 ENV MONGO_URI mongodb://db:27017
 
-CMD ["python3", "src/app.py", "--host=0.0.0.0"]
+CMD ["python3", "app.py"]
