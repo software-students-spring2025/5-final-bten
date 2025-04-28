@@ -90,6 +90,30 @@
     <script>
         // Store recipes in memory for this session
         let recipeHistory = [];
+        const allRecipes = document.getElementById('recipeHistoryContent');
+
+        async function displayOldRecipes() {
+            const data = await fetch('/recipes')
+            try {
+                const recipes = await data.json();
+                console.log(recipes)
+                return recipes;
+            }
+            catch(e) {
+                console.log(e)
+            }
+        }
+
+        async function showOldRecipes() {
+            const oldRecipes = await displayOldRecipes();
+            for(let i = 0; i < oldRecipes.length; i++) {
+                displayRecipe(oldRecipes[i], allRecipes)
+            }
+        }
+
+        showOldRecipes()
+
+        
 
         function displayRecipe(recipe, container) {
             const recipeHtml = `

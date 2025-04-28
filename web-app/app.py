@@ -75,7 +75,7 @@ def create_app():
         # Convert ObjectId to string for JSON serialization
         for recipe in recipes:
             recipe['_id'] = str(recipe['_id'])
-            recipe['timestamp'] = recipe['timestamp'].isoformat()
+            # recipe['timestamp'] = recipe['timestamp'].isoformat()
 
         return jsonify(recipes)
 
