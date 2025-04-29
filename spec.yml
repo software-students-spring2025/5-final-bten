@@ -1,0 +1,31 @@
+name: recipe
+region: nyc1
+
+services:
+  - name: api
+    # use your Docker Hub image
+    image:
+      registry_type: DOCKER_HUB
+      registry: ${{ secrets.DOCKER_USERNAME }} # your Docker Hub username/org
+      repository: 5-final-bten # the repo name (no username prefix)
+      tag: latest
+      registry_credentials: ${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}
+
+    # expose the port your Flask app listens on
+    http_port: 3000
+
+    # health checking
+    health_check:
+      http_path: /
+      port: 3000
+      timeout_seconds: 5
+
+    instance_count: 1
+    instance_size_slug: basic-xxs
+
+    envs:
+      - key: MONGO_URI
+        value: "mongodb+srv://doapps-32aбef10-5605-4b94-9383-0f04d525179b:
+h3j90d5I1iD7N28K@mongodb-
+609c9e0d.mongo.ondigitalocean.com/admin?
+authSource=admin&replicaSet=mongodb&tls=true"
