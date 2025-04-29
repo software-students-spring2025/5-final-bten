@@ -49,6 +49,6 @@ jobs:
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
 
-        - name: Update App Platform spec
-          run: |
-            doctl apps update 32a6ef10-5605-4b94-9383-0f04d525179b --spec spec.yaml
+      - name: Update App Platform spec
+        run: |
+          doctl apps update 32a6ef10-5605-4b94-9383-0f04d525179b --spec spec.yaml
